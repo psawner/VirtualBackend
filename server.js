@@ -17,6 +17,8 @@ const notificationRoutes = require('./routes/notifications');
 
 // Initialize app & server
 const app = express();
+app.set('trust proxy', 1); // ✅ Trust Heroku/Render proxy to preserve cookies
+
 const server = http.createServer(app);
 
 // ==========================
