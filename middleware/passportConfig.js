@@ -23,6 +23,23 @@ module.exports = function(passport) {
 
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id, done) => {
+  try {
+    console.log("🔍 Deserializing user with ID:", id);  // ✅ Add this
+    const [rows] = await db.execute("SELECT id, name, email, role FROM users WHERE id = ?", [id]);
+    if (rows.length === 0) {
+      console.log("❌ No user found in DB for ID:", id); // ✅ Add this
+      return done(null, false);
+    }
+
+    console.log("✅ User found:", rows[0]); // ✅ Add this
+    return done(null, rows[0]);
+  } catch (err) {
+    console.error("🔥 Error during deserialization:", err); // ✅ Add this
+    return done(err);
+  }
+});
+
+  /*passport.deserializeUser(async (id, done) => {
     try {
       //console.log("Deserializing user ID:", id);
       const [rows] = await db.execute("SELECT id, name, email, role FROM users WHERE id = ?", [id]);
@@ -31,5 +48,5 @@ module.exports = function(passport) {
     } catch (err) {
       return done(err);
     }
-  });
+  });*/
 };
